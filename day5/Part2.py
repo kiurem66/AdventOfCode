@@ -4,9 +4,11 @@ def doMove(line, stacks):
     source = int(line.split(" ")[3])
     dest = int(line.split(" ")[5])
     amt = int(line.split(" ")[1])
+    temp = []
     for i in range(amt):
-        temp = stacks[source-1].pop()
-        stacks[dest-1].append(temp)
+        temp.append(stacks[source-1].pop())
+    for i in range(amt):
+        stacks[dest-1].append(temp.pop())
 
 read_state = 0 #0 = reading stacks, 1 = reading transactions
 
