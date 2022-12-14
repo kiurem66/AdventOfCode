@@ -2,6 +2,7 @@ package day7;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.Queue;
 
 
 public class FileSystem {
@@ -9,9 +10,15 @@ public class FileSystem {
     Deque<Directory> dirStack = new ArrayDeque<>();
     Directory pointer = new Directory("/");
 
+
     public void cd(String name) {
         if(name.equals("..")){
             pointer = dirStack.pop();
+            return;
+        }
+        if(name.equals("/")){
+            if(!dirStack.isEmpty()) pointer = dirStack.peekLast();
+            return;
         }
         dirStack.push(pointer);
         pointer = pointer.getSubDirectory(name);
@@ -26,18 +33,18 @@ public class FileSystem {
     }
 
     public int getBigDirSum(){
-        Directory d = null;
-        if(dirStack.isEmpty()) d=pointer;
-        else d=dirStack.peekFirst();
-        return getBigDirSum(d);
-    }
+        Queue<Directory> sumQueue = new ArrayDeque<>();
+        sumQueue.add(getRoot());
+        int sum=0;
 
-    private int getBigDirSum(Directory curr){ 
-        int sum = 0;
-        if(curr.size() < 100000) sum+=curr.size();
-        for(Directory sub : curr){
-            sum += getBigDirSum(sub);
+        while(!sumQueue.isEmpty()){
+            Directory curr = sumQueue.remove();
+            for(Directory sub : curr){
+                sumQueue.add(sub);
+            }
+            if(curr.size() <= 100000) sum+=curr.size();
         }
+
         return sum;
     }
 
@@ -46,7 +53,28 @@ public class FileSystem {
     }
 
     void print(){
-        if(dirStack.isEmpty()) pointer.print();
-        else dirStack.peekFirst().print();
+        getRoot().print();
+    }
+
+    public Directory getRoot(){
+        if(dirStack.isEmpty()) return pointer;
+        return dirStack.peekLast();
+    }
+
+    public int getDelDir(int totalSize, int needed) {
+        int toFree = needed - (totalSize - getRoot().size());
+
+        Queue<Directory> sumQueue = new ArrayDeque<>();
+        sumQueue.add(getRoot());
+        int min=getRoot().size();
+
+        while(!sumQueue.isEmpty()){
+            Directory curr = sumQueue.remove();
+            for(Directory sub : curr){
+                sumQueue.add(sub);
+            }
+            if(curr.size() >= toFree && curr.size() < min) min = curr.size();
+        }
+        return min;
     }
 }

@@ -3,7 +3,7 @@ package day7;
 import java.io.FileReader;
 import java.util.Scanner;
 
-public class Part1 {
+public class Part2 {
     public static void main(String[] args) throws Exception {
         FileSystem fs = new FileSystem();
         Scanner scanner = new Scanner(new FileReader("day7/input.txt"));
@@ -24,6 +24,6 @@ public class Part1 {
                 }
             }
         }
-        System.out.println(fs.getBigDirSum());
+        System.out.println(fs.getDelDir(70000000, 30000000));
     }
 }
